@@ -5,8 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const audioCtx = new AudioContext();
   const destination = audioCtx.createMediaStreamDestination();
 
-  const trackGain = audioCtx.createGain(); // 🔊 controlled by slider
-  const padGain = audioCtx.createGain();   // 🔊 fixed volume
+  const trackGain = audioCtx.createGain();
+  const padGain = audioCtx.createGain();
 
   trackGain.gain.value = 0.5;
   padGain.gain.value = 1.0;
@@ -59,26 +59,46 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 200);
   }
 
+  // Existing pads
   document.getElementById("ayePad").addEventListener("click", () => {
     triggerPad("ayePad", "sounds/aye.mp3");
   });
-
   document.getElementById("nightvisionPad").addEventListener("click", () => {
     triggerPad("nightvisionPad", "sounds/nightvision.mp3");
   });
 
+  // New pads
+  document.getElementById("basslongPad").addEventListener("click", () => {
+    triggerPad("basslongPad", "sounds/basslong.mp3");
+  });
+  document.getElementById("snapPad").addEventListener("click", () => {
+    triggerPad("snapPad", "sounds/snap.mp3");
+  });
+  document.getElementById("talkingbenPad").addEventListener("click", () => {
+    triggerPad("talkingbenPad", "sounds/talkingben.mp3");
+  });
+  document.getElementById("wspeedPad").addEventListener("click", () => {
+    triggerPad("wspeedPad", "sounds/wspeed.mp3");
+  });
+  document.getElementById("bass808Pad").addEventListener("click", () => {
+    triggerPad("bass808Pad", "sounds/808bass.mp3");
+  });
+  document.getElementById("airhornPad").addEventListener("click", () => {
+    triggerPad("airhornPad", "sounds/airhorn.mp3");
+  });
+
+  // Track controls
   document.getElementById("playBtn").addEventListener("click", () => {
     playTrack("sounds/centuries.mp3");
   });
-
   document.getElementById("pauseBtn").addEventListener("click", () => {
     audioCtx.suspend();
   });
-
   document.getElementById("rewindBtn").addEventListener("click", () => {
     playTrack("sounds/centuries.mp3");
   });
 
+  // Recording
   recordBtn.addEventListener("click", () => {
     if (recordBtn.classList.contains("recording")) {
       mediaRecorder.stop();
@@ -107,18 +127,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Shortcuts
   document.addEventListener("keydown", (e) => {
     const key = e.key.toLowerCase();
-    if (key === "a") {
-      triggerPad("ayePad", "sounds/aye.mp3");
-    } else if (key === "w") {
-      triggerPad("nightvisionPad", "sounds/nightvision.mp3");
-    } else if (key === "p") {
-      playTrack("sounds/centuries.mp3");
-    } else if (key === "r") {
-      playTrack("sounds/centuries.mp3");
-    } else if (key === "s") {
-      audioCtx.suspend();
-    }
+    if (key === "a") triggerPad("ayePad", "sounds/aye.mp3");
+    else if (key === "w") triggerPad("nightvisionPad", "sounds/nightvision.mp3");
+    else if (key === "b") triggerPad("basslongPad", "sounds/basslong.mp3");
+    else if (key === "n") triggerPad("snapPad", "sounds/snap.mp3");
+    else if (key === "t") triggerPad("talkingbenPad", "sounds/talkingben.mp3");
+    else if (key === "e") triggerPad("wspeedPad", "sounds/wspeed.mp3");
+    else if (key === "8") triggerPad("bass808Pad", "sounds/808bass.mp3");
+    else if (key === "h") triggerPad("airhornPad", "sounds/airhorn.mp3");
+    else if (key === "p") playTrack("sounds/centuries.mp3");
+    else if (key === "r") playTrack("sounds/centuries.mp3");
+    else if (key === "s") audioCtx.suspend();
   });
 });

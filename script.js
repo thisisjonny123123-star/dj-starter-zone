@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let mediaRecorder;
   let recordedChunks = [];
-
+  let trackSource = null;
   const padCooldowns = {};
 
   document.getElementById("continueBtn").addEventListener("click", async () => {
@@ -39,13 +39,18 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function playTrack(url) {
+    if (trackSource) {
+      trackSource.stop();
+      trackSource.disconnect();
+    }
+
     const response = await fetch(url);
     const arrayBuffer = await response.arrayBuffer();
     const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-    const source = audioCtx.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connect(trackGain);
-    source.start();
+    trackSource = audioCtx.createBufferSource();
+    trackSource.buffer = audioBuffer;
+    trackSource.connect(trackGain);
+    trackSource.start();
   }
 
   function triggerPad(padId, soundFile) {
@@ -69,7 +74,13 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("airhornPad").addEventListener("click", () => triggerPad("airhornPad", "sounds/airhorn.mp3"));
 
   document.getElementById("playBtn").addEventListener("click", () => playTrack("sounds/centuries.mp3"));
-  document.getElementById("pauseBtn").addEventListener("click", () => audioCtx.suspend());
+  document.getElementById("pauseBtn").addEventListener("click", () => {
+    if (trackSource) {
+      trackSource.stop();
+      trackSource.disconnect();
+      trackSource = null;
+    }
+  });
   document.getElementById("rewindBtn").addEventListener("click", () => playTrack("sounds/centuries.mp3"));
 
   document.getElementById("recordBtn").addEventListener("click", () => {
@@ -111,7 +122,13 @@ document.addEventListener("DOMContentLoaded", () => {
     else if (key === "8") triggerPad("bass808Pad", "sounds/808bass.mp3");
     else if (key === "h") triggerPad("airhornPad", "sounds/airhorn.mp3");
     else if (key === "p") playTrack("sounds/centuries.mp3");
-    else if (key === "s") audioCtx.suspend();
+    else if (key === "s") {
+      if (trackSource) {
+        trackSource.stop();
+        trackSource.disconnect();
+        trackSource = null;
+      }
+    }
     else if (key === "r") playTrack("sounds/centuries.mp3");
   });
 });

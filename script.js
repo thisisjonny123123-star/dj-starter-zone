@@ -16,6 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let mediaRecorder;
   let recordedChunks = [];
 
+  const padCooldowns = {};
+
   document.getElementById("continueBtn").addEventListener("click", async () => {
     await audioCtx.resume();
     document.getElementById("introScreen").classList.add("hidden");
@@ -47,13 +49,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function triggerPad(padId, soundFile) {
+    const now = Date.now();
+    if (padCooldowns[padId] && now - padCooldowns[padId] < 200) return;
+    padCooldowns[padId] = now;
+
     const pad = document.getElementById(padId);
     pad.classList.add("active");
     playPad(soundFile);
     setTimeout(() => pad.classList.remove("active"), 200);
   }
 
-  // Pad click handlers
   document.getElementById("ayePad").addEventListener("click", () => triggerPad("ayePad", "sounds/aye.mp3"));
   document.getElementById("nightvisionPad").addEventListener("click", () => triggerPad("nightvisionPad", "sounds/nightvision.mp3"));
   document.getElementById("basslongPad").addEventListener("click", () => triggerPad("basslongPad", "sounds/basslong.mp3"));
@@ -63,12 +68,10 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("bass808Pad").addEventListener("click", () => triggerPad("bass808Pad", "sounds/808bass.mp3"));
   document.getElementById("airhornPad").addEventListener("click", () => triggerPad("airhornPad", "sounds/airhorn.mp3"));
 
-  // Track controls
   document.getElementById("playBtn").addEventListener("click", () => playTrack("sounds/centuries.mp3"));
   document.getElementById("pauseBtn").addEventListener("click", () => audioCtx.suspend());
   document.getElementById("rewindBtn").addEventListener("click", () => playTrack("sounds/centuries.mp3"));
 
-  // Recording
   document.getElementById("recordBtn").addEventListener("click", () => {
     if (recordBtn.classList.contains("recording")) {
       mediaRecorder.stop();
@@ -97,7 +100,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Shortcut keys
   document.addEventListener("keydown", (e) => {
     const key = e.key.toLowerCase();
     if (key === "a") triggerPad("ayePad", "sounds/aye.mp3");
